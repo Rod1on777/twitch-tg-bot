@@ -37,6 +37,11 @@ def check_and_notify():
         tg_url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
         requests.post(tg_url, data={"chat_id": TELEGRAM_CHANNEL_ID, "text": msg})
         return "Stream is LIVE, notification sent!"
+    else:
+        # Тестовая отправка сообщения, если стрим оффлайн
+        offline_msg = f"⚪️ Стрим {TWITCH_CHANNEL} сейчас оффлайн."
+        send_telegram_message(offline_msg)
+        return "Stream is OFFLINE, test notification sent!"
     
     return "Stream is offline."
 
