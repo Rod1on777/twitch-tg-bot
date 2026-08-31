@@ -7,7 +7,7 @@ from http.server import BaseHTTPRequestHandler
 
 TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')
 TELEGRAM_CHANNEL_ID = os.environ.get('TELEGRAM_CHANNEL_ID')
-TWITCH_SECRET = os.environ.get('TWITCH_EVENTSUB_SECRET', 'SuperSecretString123!')
+TWITCH_SECRET = os.environ.get('TWITCH_EVENTSUB_SECRET')
 
 def send_telegram_message(text):
     tg_url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
