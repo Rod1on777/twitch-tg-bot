@@ -8,6 +8,10 @@ TWITCH_CHANNEL = os.environ.get('TWITCH_CHANNEL')
 TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')
 TELEGRAM_CHANNEL_ID = os.environ.get('TELEGRAM_CHANNEL_ID')
 
+def send_telegram_message(text):
+    tg_url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+    requests.post(tg_url, data={"chat_id": TELEGRAM_CHANNEL_ID, "text": text})
+
 def get_twitch_token():
     url = "https://id.twitch.tv/oauth2/token"
     data = {
@@ -32,18 +36,14 @@ def check_and_notify():
     
     if res.get('data') and len(res['data']) > 0:
         stream = res['data'][0]
-        msg = f"🔴 СТРИМ НАЧАЛСЯ!\n\n🎮 Категория: {stream.get('game_name', 'Не указана')}\n📌 Название: {stream.get('title', 'Без темы')}\n\nhttps://twitch.tv/{TWITCH_CHANNEL}"
-        
-        tg_url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
-        requests.post(tg_url, data={"chat_id": TELEGRAM_CHANNEL_ID, "text": msg})
+        msg = f"🔴 СТРИМ НАЧАЛСЯ!\n\n🎮 Игра: {stream.get('game_name', 'Не указана')}\n📌 Тема: {stream.get('title', 'Без темы')}\n\nhttps://twitch.tv/{TWITCH_CHANNEL}"
+        send_telegram_message(msg)
         return "Stream is LIVE, notification sent!"
     else:
         # Тестовая отправка сообщения, если стрим оффлайн
         offline_msg = f"⚪️ Стрим {TWITCH_CHANNEL} сейчас оффлайн."
         send_telegram_message(offline_msg)
         return "Stream is OFFLINE, test notification sent!"
-    
-    return "Stream is offline."
 
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
